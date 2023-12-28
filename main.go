@@ -5,7 +5,6 @@ import (
 	"encoding/xml"
 	"fmt"
 	"io"
-	"log"
 	"net/http"
 	"regexp"
 )
@@ -24,28 +23,38 @@ type Image struct {
 	Height  uint16   `xml:"height"`
 }
 
+type MediaContent struct {
+	XMLName xml.Name `xml:"content"`
+	Url     string   `xml:"url,attr"`
+}
+
 type Item struct {
-	XMLName     xml.Name `xml:"item"`
-	Title       string   `xml:"title"`
-	Link        string   `xml:"link"`
-	Guid        string   `xml:"guid"`
-	Description string   `xml:"description"`
+	XMLName      xml.Name     `xml:"item"`
+	Title        string       `xml:"title"`
+	Link         string       `xml:"link"`
+	Guid         string       `xml:"guid"`
+	Description  string       `xml:"description"`
+	MediaContent MediaContent `xml:"content"`
+	Category     string       `xml:"category"`
+	PubDate      string       `xml:"pubDate"`
 }
 
 type AtomLink struct {
-	XMLName xml.Name `xml:"link"`
+	XMLName xml.Name `xml:"http://www.w3.org/2005/Atom link"`
 	Href    string   `xml:"href,attr"`
+	Rel     string   `xml:"rel,attr"`
+	Type    string   `xml:"type,attr"`
 }
 
 type Channel struct {
-	XMLName     xml.Name `xml:"channel"`
-	Title       string   `xml:"title"`
-	Link        string   `xml:"link"`
+	XMLName xml.Name `xml:"channel"`
+	Title   string   `xml:"title"`
+	// Link        string   `xml:"link"` TODO: To solve -> It conflicts with AtomLink (<atom:link />)
 	Description string   `xml:"description"`
 	Language    string   `xml:"language"`
 	Copyright   string   `xml:"copyright"`
-	Image       Image    `xml:"image"`
 	AtomLink    AtomLink `xml:"http://www.w3.org/2005/Atom link"`
+	Image       Image    `xml:"image"`
 	Items       []Item   `xml:"item"`
 }
 
@@ -70,14 +79,15 @@ func getXml(w http.ResponseWriter, r *http.Request) {
 	var feed Feed
 	xml.Unmarshal(data, &feed)
 
-	rsp, err := json.Marshal(feed)
-	if err != nil {
-		log.Fatalf("something went wrong: %v", err)
-	}
+	// rsp, err := json.Marshal(feed)
+	// if err != nil {
+	// 	log.Fatalf("something went wrong: %v", err)
+	// }
 
-	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
-	w.Write(rsp)
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&feed)
+	// w.Write(rsp)
 
 	// return
 }
