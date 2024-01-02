@@ -1,4 +1,4 @@
-package main
+package rss2go
 
 import (
 	"encoding/xml"
@@ -82,8 +82,6 @@ func Rss2Go(feedUrl string) (*Feed, error) {
 	err = xml.Unmarshal(data, &feed)
 	if err != nil {
 		return nil, fmt.Errorf("something went wrong on unmarshal xml: %v", err)
-	} else if &feed == nil {
-		return nil, fmt.Errorf("something went wrong on unmarshal xml")
 	}
 
 	return &feed, nil
