@@ -61,6 +61,6 @@ The following Go structs are used to represent the structure of an RSS feed:
 
 Contributions are welcome! Feel free to submit a pull request or open an issue if you encounter any bugs or have suggestions for new features.
 
-<!--License
+## License
 
-This project is licensed under the MIT License. See the LICENSE file for details.-->
+This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for details.
